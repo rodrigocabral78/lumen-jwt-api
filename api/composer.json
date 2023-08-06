@@ -1,40 +1,74 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
-    "license": "MIT",
-    "type": "project",
-    "require": {
-        "php": "^8.1",
-        "laravel/lumen-framework": "^10.0"
-    },
-    "require-dev": {
-        "fakerphp/faker": "^1.9.1",
-        "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^10.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
-    "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ]
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+  "name": "laravel/lumen",
+  "description": "The Laravel Lumen Framework.",
+  "keywords": [
+    "framework",
+    "laravel",
+    "lumen"
+  ],
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "php": "^8.1",
+    "ext-calendar": "*",
+    "ext-ctype": "*",
+    "ext-curl": "*",
+    "ext-exif": "*",
+    "ext-gd": "*",
+    "ext-iconv": "*",
+    "ext-igbinary": "*",
+    "ext-imagick": "*",
+    "ext-intl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*",
+    "ext-pdo_sqlite": "*",
+    "ext-sodium": "*",
+    "ext-sqlite3": "*",
+    "ext-tokenizer": "*",
+    "ext-xml": "*",
+    "ext-xsl": "*",
+    "laravel/lumen-framework": "^10.0",
+    "tymon/jwt-auth": "^2.0"
+  },
+  "require-dev": {
+    "fakerphp/faker": "^1.9.1",
+    "flipbox/lumen-generator": "^9.2",
+    "friendsofphp/php-cs-fixer": "^3.22",
+    "lucascudo/laravel-pt-br-localization": "^2.0",
+    "mockery/mockery": "^1.4.4",
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Database\\Factories\\": "database/factories/",
+      "Database\\Seeders\\": "database/seeders/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "sniff": [
+      "./vendor/bin/php-cs-fixer fix -vvv --dry-run --show-progress=dots"
+    ],
+    "lint": [
+      "./vendor/bin/php-cs-fixer fix -vvv --show-progress=dots"
+    ],
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+      "@php artisan key:generate --ansi"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }

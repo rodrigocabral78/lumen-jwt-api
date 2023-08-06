@@ -15,7 +15,6 @@ class ExampleListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
@@ -26,6 +25,5 @@ class ExampleListener
      */
     public function handle(ExampleEvent $event)
     {
-        //
     }
 }

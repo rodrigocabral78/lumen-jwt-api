@@ -4,6 +4,8 @@ use Illuminate\Support\Str;
 
 return [
 
+    'sql_logging' => env('DB_SQL_LOG', 'false'),
+
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name

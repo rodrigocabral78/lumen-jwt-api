@@ -9,15 +9,39 @@ FROM php:8.2.8-cli-bookworm
 LABEL "provider"="PHP" \
   "issues"="https://github.com/docker-library/php/issues"
 
+#
+ARG ORACLE_LATEST=12.1
+
 # Use second ENV so that variable get substituted
 ENV TZ=America/Manaus \
 LC_ALL=C.UTF-8 \
 LANG=pt_BR.UTF-8 \
 LANGUAGE=pt_BR:pt:pt_PT:en \
-DEBIAN_FRONTEND=noninteractive
+ORACLE_LATEST=${ORACLE_LATEST} \
+ORACLE_BASE=/usr/lib/oracle \
+ORACLE_HOME=/usr/lib/oracle/${ORACLE_LATEST}/client64 \
+NLS_TERRITORY=BRAZIL \
+NLS_LANG="BRAZILIAN PORTUGUESE_BRAZIL.UTF8" \
+NLS_LANGUAGE="BRAZILIAN PORTUGUESE" \
+NLS_CHARACTERSET=UTF8 \
+NLS_NCHAR_CHARACTERSET=AL32UTF8 \
+NLS_CURRENCY="R$" \
+NLS_NUMERIC_CHARACTERS=".," \
+NLS_SORT=WEST_EUROPEAN_AI \
+NLS_COMP=BINARY \
+NLS_DATE_FORMAT="RRRR-MM-DD HH24:MI:SS" \
+NLS_TIMESTAMP_FORMAT="RRRR-MM-DD HH24:MI:SS.FF"
 
 # Config PHP
 # ------------------------------
+# Use the default production configuration
+# RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+# Override with custom mysql settings
+# COPY config/mysql.ini $PHP_INI_DIR/conf.d/
+# COPY config/pdo_mysql.ini $PHP_INI_DIR/conf.d/
+# ------------------------------
+# pecl install --force --soft --alldeps redis --enable-redis-igbinary=no --enable-redis-lzf=no --enable-redis-zstd=no ; \
+#
 RUN set -xe ; \
 echo ${TZ} | tee /etc/timezone ; \
 cp -rf /usr/share/zoneinfo/${TZ} /etc/localtime ; \
@@ -29,42 +53,47 @@ curl -sSi https://getcomposer.org/installer | php -- --install-dir=/usr/local/bi
 \
 apt-get update -y ; apt-get upgrade -yq --no-install-recommends ; \
 apt-get install -y --no-install-recommends \
-libicu-dev \
+libaio1 \
+libbz2-dev \
 libfreetype6-dev \
+libicu-dev \
 libjpeg-dev \
 libpng-dev \
+libpq-dev \
 libzip-dev \
-libbz2-dev \
-libicu-dev \
-git git-lfs locales ; \
+git git-lfs locales alien ; \
 localedef -i $(echo ${LANG} | cut -d. -f1) -c -f $(echo ${LANG} | cut -d. -f2) -A /usr/share/locale/locale.alias ${LANG} ; \
 locale-gen ${LANG} ; \
 date ; \
 \
+git clone https://github.com/rodrigocabral78/instantclient${ORACLE_LATEST}.git /tmp/instantclient${ORACLE_LATEST} ; \
+CLIENTS='basiclite devel sqlplus tools' ; \
+for CLI in ${CLIENTS}; do echo ${CLI}; alien --install --scripts /tmp/instantclient${ORACLE_LATEST}/oracle-instantclient${ORACLE_LATEST}-${CLI}*rpm ; done ; \
+apt-get install -f -y --no-install-recommends ; \
+export TNS_ADMIN=${ORACLE_HOME}/lib/network/admin ; \
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}/lib ; \
+export C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/oracle/${ORACLE_LATEST}/client64 ; \
+mkdir -p ${TNS_ADMIN} ; \
+export PATH=${ORACLE_HOME}/bin:$PATH ; echo $PATH ; \
+echo ${ORACLE_HOME}"/lib" | tee /etc/ld.so.conf.d/oracle.conf ; ldconfig ; \
+\
 docker-php-source extract ; \
 docker-php-ext-configure bz2 --with-bz2 ; \
 docker-php-ext-configure gd --with-freetype --with-jpeg ; \
-docker-php-ext-configure intl ; \
-docker-php-ext-configure zip ; \
-docker-php-ext-install -j$(nproc) bcmath bz2 calendar exif gd intl zip ; \
-docker-php-ext-enable bcmath bz2 calendar exif gd intl zip ; \
-pecl install redis ; \
-pecl install swoole ; \
-pecl install xdebug ;\
-docker-php-ext-enable redis swoole xdebug ; \
+docker-php-ext-configure oci8 --with-oci8=instantclient ; \
+docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,${ORACLE_HOME}/lib ; \
+docker-php-ext-install -j$(nproc) bcmath bz2 calendar exif gd intl mysqli oci8 pdo_mysql pdo_oci pdo_pgsql pgsql zip ; \
+\
+pecl channel-update pecl.php.net ; \
+pecl install --force --soft --onlyreqdeps redis --enable-redis-igbinary=yes --enable-redis-lzf=no --enable-redis-zstd=no ; \
+docker-php-ext-enable redis ; \
 pecl clear-cache ; \
 docker-php-source delete ; \
+unset C_INCLUDE_PATH LD_LIBRARY_PATH ; \
 \
-apt-get purge -y locales software-properties-common ; apt-get autoclean ; apt-get autoremove -y ; rm -rf /var/lib/apt/lists/* ; rm -rf /usr/lib/python3 \
+apt-get purge -y locales alien software-properties-common oracle-instantclient${ORACLE_LATEST}-devel ; apt-get autoclean ; apt-get autoremove -y ; rm -rf /var/lib/apt/lists/* ; rm -rf /usr/lib/python3 \
 ; apt-get update -y ; apt-get upgrade -yq --no-install-recommends ; apt-get autoclean ; apt-get autoremove -y ; rm -rf /var/lib/apt/lists/*
 
-
-
-# Use the default production configuration
-# RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-# Override with custom mysql settings
-# COPY config/mysql.ini $PHP_INI_DIR/conf.d/
-# COPY config/pdo_mysql.ini $PHP_INI_DIR/conf.d/
 
 # COPY ./api /var/www/app
 

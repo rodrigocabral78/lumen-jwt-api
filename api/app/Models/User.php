@@ -141,4 +141,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return true === $this->is_active;
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', '=', 1);
+    }
+
+    public function scopeAdmin($query)
+    {
+        return $query->where('is_admin', '=', 1);
+    }
 }

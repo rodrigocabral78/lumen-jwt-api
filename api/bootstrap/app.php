@@ -99,8 +99,10 @@ $app->register(App\Providers\AuthServiceProvider::class);
 
 if ('production' !== $app->environment()) {
     $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+    $app->register(\Rodrixcornell\ApiGenerate\ApiGenerateServiceProvider::class);
 }
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Yajra\Oci8\Oci8ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -113,10 +115,21 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 |
 */
 
+use Illuminate\Support\Facades\File;
+
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
-], function ($router) {
+], function ($router) use ($app) {
+    $basePathApp  = $app->basePath('app');
+    $routeModules = __DIR__ . '/../routes/modules/';
+    if (is_dir($routeModules)) {
+        $files = File::allFiles($routeModules);
+        foreach ($files as $file) {
+            require $routeModules . $file->getFilename();
+        }
+    }
     require __DIR__ . '/../routes/auth.php';
+    // dd($routeModules, $basePathApp, $app);
     require __DIR__ . '/../routes/api.php';
 });
 

@@ -93,7 +93,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Interact with the user's password.
      */
-    protected function Password(): Attribute
+    protected function password(): Attribute
     {
         return Attribute::make(
             set: fn (string $value) => Hash::make($value),

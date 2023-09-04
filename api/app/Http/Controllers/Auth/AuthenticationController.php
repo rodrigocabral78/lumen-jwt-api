@@ -38,19 +38,19 @@ class AuthenticationController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('Store');
+        Log::info('Store AuthenticationController');
 
         $this->validate($request, [
             'email'    => 'required|string|email',
             'password' => 'required|string|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
         // $credentials = request(['email', 'password']);
+        $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);
         if (!$token) {
-            Log::warning("Unauthorized");
+            Log::warning('Unauthorized');
 
             return response()->json([
                 'message' => 'Unauthorized',
@@ -65,9 +65,10 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    // public function show(User $user)
+    public function show()
     {
-        Log::info('Show User');
+        Log::info('Show User AuthenticationController');
 
         // return response()->json($user);
         return response()->json(Auth::user());
@@ -80,7 +81,7 @@ class AuthenticationController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        Log::info('Update Token');
+        Log::info('Update Token AuthenticationController');
 
         $token = Auth::refresh();
 
@@ -94,6 +95,8 @@ class AuthenticationController extends Controller
      */
     public function destroy(User $user)
     {
+        Log::info('Destroy User AuthenticationController');
+
         Auth::logout();
 
         return response()->json([
@@ -110,14 +113,13 @@ class AuthenticationController extends Controller
      */
     protected function replyWithToken($token)
     {
-        Log::info('Reply with Token');
+        Log::info('Reply with Token AuthenticationController');
 
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            // default 1 hour
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'date_time'  => Carbon::now()->format('Y-m-d H:i:s'),
+            'expires_in'   => Auth::factory()->getTTL() * 60,
+            'date_time'    => Carbon::now()->format('Y-m-d H:i:s'),
         ], Response::HTTP_OK);
     }
 }

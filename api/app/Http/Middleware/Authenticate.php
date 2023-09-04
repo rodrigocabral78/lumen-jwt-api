@@ -42,17 +42,20 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
+        Log::info('Middleware');
+
         // dd($request, $guard);
-        if ($this->auth->guard($guard)->guest()) {
-            Log::warning('Unauthorized');
+        // if ($this->auth->guard($guard)->guest()) {
+        //     Log::warning('Unauthorized');
 
-            return response()->json(['message' => 'Unauthorized.'], Response::HTTP_UNAUTHORIZED);
-        }
+        //     return response()->json(['message' => 'Unauthorized.'], Response::HTTP_UNAUTHORIZED);
+        // }
 
-        $bearer = $request->bearerToken();
+        // $bearer = $request->bearerToken();
         // dd($bearer);
+
         try {
-            $user   = JWTAuth::parseToken()->authenticate();
+            $user = JWTAuth::parseToken()->authenticate();
             // dd($user);
             if (!$user) {
                 Log::warning('User not Found');
@@ -60,14 +63,14 @@ class Authenticate
                 return response()->json(['message' => 'User not Found'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         } catch (\Exception $e) {
-            if ($e instanceof TokenExpiredException) {
-                Log::warning('Token is Expired', ['error' => $e]);
-
-                return response()->json(['message' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
-            } elseif ($e instanceof TokenBlacklistedException) {
+            if ($e instanceof TokenBlacklistedException) {
                 Log::warning('Token is Blacklisted', ['error' => $e]);
 
                 return response()->json(['message' => 'Token is Blacklisted'], Response::HTTP_BAD_REQUEST);
+            } elseif ($e instanceof TokenExpiredException) {
+                Log::warning('Token is Expired', ['error' => $e]);
+
+                return response()->json(['message' => 'Token is Expired'], Response::HTTP_UNAUTHORIZED);
             } elseif ($e instanceof TokenInvalidException) {
                 Log::warning('Token is Invalid', ['error' => $e]);
 

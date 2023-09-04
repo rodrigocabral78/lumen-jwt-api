@@ -30,7 +30,8 @@
     "ext-xml": "*",
     "ext-xsl": "*",
     "laravel/lumen-framework": "^10.0",
-    "tymon/jwt-auth": "^2.0"
+    "tymon/jwt-auth": "^2.0",
+    "yajra/laravel-oci8": "^10.3"
   },
   "require-dev": {
     "fakerphp/faker": "^1.9.1",
@@ -38,7 +39,9 @@
     "friendsofphp/php-cs-fixer": "^3.22",
     "lucascudo/laravel-pt-br-localization": "^2.0",
     "mockery/mockery": "^1.4.4",
-    "phpunit/phpunit": "^10.0"
+    "phpunit/phpunit": "^10.0",
+    "rodrixcornell/apigenerate": "dev-master",
+    "squizlabs/php_codesniffer": "^3.7"
   },
   "autoload": {
     "psr-4": {

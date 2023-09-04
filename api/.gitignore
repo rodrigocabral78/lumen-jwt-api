@@ -18,6 +18,7 @@ composer.lock
 npm-debug.log
 yarn-error.log
 .php-cs-fixer.cache
+.php-cs-fixer-old.php
 /.fleet
 /.idea
 /.vscode

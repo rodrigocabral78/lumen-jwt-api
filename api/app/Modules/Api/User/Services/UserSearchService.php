@@ -8,12 +8,7 @@ use Illuminate\Support\Str;
 final class UserSearchService
 {
     /**
-     * __invoke
-     *
-     * @param mixed $queryBuilder
-     * @param mixed $request
-     *
-     * @return object
+     * __invoke.
      */
     public function __invoke($queryBuilder, $request): object
     {
@@ -34,13 +29,13 @@ final class UserSearchService
         if ($request->name) {
             Log::info('Name');
 
-            $queryBuilder->where("name", "like", "%". Str::of($request->name)->trim() . "%");
+            $queryBuilder->where("name", "like", "%" . Str::of($request->name)->trim() . "%");
         }
 
         if ($request->email) {
             Log::info('Email');
 
-            $queryBuilder->where("email", "like", "%". Str::of($request->email)->trim() . "%");
+            $queryBuilder->where("email", "like", "%" . Str::of($request->email)->trim() . "%");
         }
 
         if ($request->is_admin) {
@@ -70,7 +65,7 @@ final class UserSearchService
         if ($request->order) {
             Log::info('Order By Id');
 
-            $order = ($request->order == "asc") ? "asc" : "desc";
+            $order = ("asc" == $request->order) ? "asc" : "desc";
             $queryBuilder->orderBy("id", $order);
         }
 

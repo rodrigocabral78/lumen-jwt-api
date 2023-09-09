@@ -10,18 +10,13 @@ use Illuminate\Support\Facades\Log;
 class UserService
 {
     /**
-     * index
-     *
-     * @param Request $request
-     *
-     * @return array
+     * index.
      */
-    public function index(Request $request): array
+    public function index(Request $request): mixed
     {
         Log::info('Search User');
 
-        $userSearchService = new UserSearchService();
-        $data = $userSearchService(User::with([]), $request)->toArray();
+        $data = (new UserSearchService())(User::with([]), $request)->toArray();
 
         return [
             'total_count' => $data['total'],
@@ -41,13 +36,9 @@ class UserService
     }
 
     /**
-     * show
-     *
-     * @param mixed $id
-     *
-     * @return array
+     * show.
      */
-    public function show($id): array
+    public function show($id): mixed
     {
         Log::info('Find User');
 
@@ -58,11 +49,7 @@ class UserService
     }
 
     /**
-     * store
-     *
-     * @param mixed $data
-     *
-     * @return mixed
+     * store.
      */
     public function store($data): mixed
     {
@@ -72,12 +59,7 @@ class UserService
     }
 
     /**
-     * update
-     *
-     * @param mixed $data
-     * @param mixed $id
-     *
-     * @return mixed
+     * update.
      */
     public function update($data, $id): mixed
     {
@@ -87,11 +69,7 @@ class UserService
     }
 
     /**
-     * destroy
-     *
-     * @param mixed $id
-     *
-     * @return mixed
+     * destroy.
      */
     public function destroy($id): mixed
     {

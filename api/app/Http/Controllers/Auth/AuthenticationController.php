@@ -23,21 +23,14 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * index
-     *
-     * @return mixed
+     * index.
      */
     public function index(): mixed
     {
     }
 
-
     /**
-     * store
-     *
-     * @param Request $request
-     *
-     * @return mixed
+     * store.
      */
     public function store(Request $request): mixed
     {
@@ -50,7 +43,7 @@ class AuthenticationController extends Controller
 
         $credentials = $request->only(['email', 'password']);
 
-        if (! Auth::validate($credentials)) {
+        if (!Auth::validate($credentials)) {
             Log::warning('Credentials are not valid');
 
             return response()->json([
@@ -58,7 +51,7 @@ class AuthenticationController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
         $token = Auth::attempt($credentials);
-        if (! $token) {
+        if (!$token) {
             Log::warning('Unauthorized authentication');
 
             return response()->json([
@@ -70,11 +63,9 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * show
-     *
-     * @return mixed
+     * show.
      */
-    public function show():mixed
+    public function show(): mixed
     {
         Log::info('Show User Authentication');
 
@@ -82,11 +73,9 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * update
-     *
-     * @return mixed
+     * update.
      */
-    public function update():mixed
+    public function update(): mixed
     {
         Log::info('Update Token Authentication');
 
@@ -94,9 +83,7 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * destroy
-     *
-     * @return mixed
+     * destroy.
      */
     public function destroy(): mixed
     {
@@ -111,11 +98,7 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * replyWithToken
-     *
-     * @param string $token
-     *
-     * @return mixed
+     * replyWithToken.
      */
     protected function replyWithToken(string $token): mixed
     {

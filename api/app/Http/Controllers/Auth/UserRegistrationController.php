@@ -24,8 +24,8 @@ class UserRegistrationController extends Controller
                 'password_confirmation' => 'required|string|min:6|same:password',
             ]);
 
-            $user = (new UserService)->store($request->only([
-                'name', 'email', 'password'
+            $user = (new UserService())->store($request->only([
+                'name', 'email', 'password',
             ]));
 
             $token = Auth::login($user);

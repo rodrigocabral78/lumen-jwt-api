@@ -15,7 +15,7 @@ class UserController extends Controller
     }
 
     /**
-     * index
+     * index.
      *
      * @param Request $request
      *
@@ -31,7 +31,7 @@ class UserController extends Controller
     }
 
     /**
-     * show
+     * show.
      *
      * @param mixed $id
      *
@@ -47,7 +47,7 @@ class UserController extends Controller
     }
 
     /**
-     * store
+     * store.
      *
      * @param Request $request
      *
@@ -60,7 +60,7 @@ class UserController extends Controller
         $validator = $this->validate($request, [
             'name'                  => 'required|string|min:6|max:254',
             'email'                 => 'sometimes|required|string|email|max:254|unique:users',
-            'password'              => 'required|string|min:6|confirmed',
+            'password'              => 'required|string|min:6',
             'is_admin'              => 'required|boolean',
             'is_active'             => 'required|boolean',
         ]);
@@ -73,7 +73,7 @@ class UserController extends Controller
 
         $data = $this->userService->store(
             $request->only([
-                'name', 'email', 'password', 'is_admin', 'is_active'
+                'name', 'email', 'password', 'is_admin', 'is_active',
             ])
         );
 
@@ -81,7 +81,7 @@ class UserController extends Controller
     }
 
     /**
-     * update
+     * update.
      *
      * @param Request $request
      * @param mixed $id
@@ -92,28 +92,30 @@ class UserController extends Controller
     {
         Log::info('Update User');
 
-        $validator = $this->validate($request, [
+        $this->validate($request, [
             'name'                  => 'required|string|min:6|max:254',
-            'email'                 => 'sometimes|required|string|email|max:254|unique:users',
-            'password'              => 'required|string|min:6|confirmed',
+            'email'                 => 'sometimes|required|string|email|max:254|unique:users,email,' . $id,
+            'password'              => 'required|string|min:6',
             'is_admin'              => 'required|boolean',
             'is_active'             => 'required|boolean',
         ]);
 
-        dd($validator);
-
         $data = $this->userService->update(
             $request->only([
-                'name', 'email', 'password', 'is_admin', 'is_active'
+                'name', 'email', 'password', 'is_admin', 'is_active',
             ]),
             $id
         );
+
+        if ($data) {
+            $data = $this->userService->show($id);
+        }
 
         return response()->json($data, 200);
     }
 
     /**
-     * destroy
+     * destroy.
      *
      * @param mixed $id
      *

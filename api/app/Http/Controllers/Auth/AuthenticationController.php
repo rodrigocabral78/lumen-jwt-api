@@ -23,81 +23,87 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * index
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function index()
+    public function index(): mixed
     {
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * store
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return mixed
      */
-    public function store(Request $request)
+    public function store(Request $request): mixed
     {
-        Log::info('Store AuthenticationController');
+        Log::info('Store Authentication');
 
         $this->validate($request, [
             'email'    => 'sometimes|required|string|email|max:254',
             'password' => 'required|string|min:6',
         ]);
 
-        // $credentials = request(['email', 'password']);
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only(['email', 'password']);
 
-        $token = Auth::attempt($credentials);
-        if (!$token) {
-            Log::warning('Unauthorized');
+        if (! Auth::validate($credentials)) {
+            Log::warning('Credentials are not valid');
 
             return response()->json([
-                'message' => 'Unauthorized',
+                'message' => 'Credentials are not valid',
             ], Response::HTTP_UNAUTHORIZED);
+        }
+        $token = Auth::attempt($credentials);
+        if (! $token) {
+            Log::warning('Unauthorized authentication');
+
+            return response()->json([
+                'message' => 'Unauthorized authentication',
+            ], Response::HTTP_FORBIDDEN);
         }
 
         return $this->replyWithToken($token);
     }
 
     /**
-     * Display the specified resource.
+     * show
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    // public function show(User $user)
-    public function show()
+    public function show():mixed
     {
-        Log::info('Show User AuthenticationController');
+        Log::info('Show User Authentication');
 
-        // return response()->json($user);
         return response()->json(Auth::user());
     }
 
     /**
-     * Update the specified resource in storage.
+     * update
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function update(Request $request, User $user)
+    public function update():mixed
     {
-        Log::info('Update Token AuthenticationController');
+        Log::info('Update Token Authentication');
 
-        $token = Auth::refresh();
-
-        return $this->replyWithToken($token);
+        return $this->replyWithToken(Auth::refresh(true, true));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function destroy(User $user)
+    public function destroy(): mixed
     {
-        Log::info('Destroy User AuthenticationController');
+        Log::info('Destroy User Authentication');
 
         Auth::logout();
+        Auth::invalidate(true);
 
         return response()->json([
             'message' => 'Logout with success!',
@@ -105,15 +111,15 @@ class AuthenticationController extends Controller
     }
 
     /**
-     * Undocumented function.
+     * replyWithToken
      *
-     * @param [type] $token
+     * @param string $token
      *
-     * @return void
+     * @return mixed
      */
-    protected function replyWithToken($token)
+    protected function replyWithToken(string $token): mixed
     {
-        Log::info('Reply with Token AuthenticationController');
+        Log::info('Reply with Token Authentication');
 
         return response()->json([
             'access_token' => $token,

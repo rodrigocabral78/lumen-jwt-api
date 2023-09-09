@@ -32,15 +32,12 @@ class AppServiceProvider extends ServiceProvider
                 //     Log::info('sql: ' . $query->sql);
                 //     // Also available are $query->bindings and $query->time.
                 // }
-                // dd($query->connection);
-                // dd($query->connection->getConfig());
-                // dd($query->connection->getName());
                 Log::info(
                     'sql: ' . $query->sql,
                     [
+                        'time'       => $query->time,
                         'bindings'   => $query->bindings,
                         'connection' => $query->connection->getConfig(),
-                        'time'       => $query->time,
                     ]
                 );
             });

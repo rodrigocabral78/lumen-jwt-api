@@ -28,10 +28,9 @@ $router->group([
             'as'   => 'in',
             'uses' => 'AuthenticationController@store',
         ]);
-
         $router->post('register', [
             'as'   => 'register',
-            'uses' => 'UserRegistrationController@store',
+            'uses' => 'UserRegistrationController',
         ]);
     });
 
@@ -46,12 +45,10 @@ $router->group([
             'as'   => 'out',
             'uses' => 'AuthenticationController@destroy',
         ]);
-
         $router->post('refresh', [
             'as'   => 'refresh',
             'uses' => 'AuthenticationController@update',
         ]);
-
         $router->post('me', [
             'as'   => 'me',
             'uses' => 'AuthenticationController@show',

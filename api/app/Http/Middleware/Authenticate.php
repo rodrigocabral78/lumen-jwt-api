@@ -40,9 +40,9 @@ class Authenticate
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, $guard = null): mixed
     {
-        Log::info('Middleware');
+        Log::info('Middleware Authenticate');
 
         // dd($request, $guard);
         // if ($this->auth->guard($guard)->guest()) {

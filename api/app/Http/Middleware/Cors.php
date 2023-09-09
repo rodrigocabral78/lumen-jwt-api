@@ -4,8 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class CorsMiddleware
+class Cors
 {
     /**
      * Handle an incoming request.
@@ -14,8 +15,10 @@ class CorsMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
+        Log::info('Middleware Cors');
+
         // return $next($request);
         // dd($request->header()['host']);
         // dd($request->header('host'));

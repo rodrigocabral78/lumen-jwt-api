@@ -5,6 +5,7 @@ namespace App\Modules\Api\User\Services;
 use App\Modules\Api\User\Models\User;
 use App\Modules\Api\User\Services\UserSearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -17,6 +18,8 @@ class UserService
      */
     public function index(Request $request): array
     {
+        Log::info('Search User');
+
         $userSearchService = new UserSearchService();
         $data = $userSearchService(User::with([]), $request)->toArray();
 
@@ -46,6 +49,8 @@ class UserService
      */
     public function show($id): array
     {
+        Log::info('Find User');
+
         // $user = User::findOrFail($id);
         $user = User::find($id);
 
@@ -57,10 +62,12 @@ class UserService
      *
      * @param mixed $data
      *
-     * @return array
+     * @return mixed
      */
-    public function store($data): array
+    public function store($data): mixed
     {
+        Log::info('Create User');
+
         return User::create($data);
     }
 
@@ -70,14 +77,13 @@ class UserService
      * @param mixed $data
      * @param mixed $id
      *
-     * @return array
+     * @return mixed
      */
-    public function update($data, $id): array
+    public function update($data, $id): mixed
     {
-        // $user = User::find($id)
-        $user = User::find($id)->update($data);
+        Log::info('Find & Update User');
 
-        return $user;
+        return User::find($id)->update($data);
     }
 
     /**
@@ -85,12 +91,12 @@ class UserService
      *
      * @param mixed $id
      *
-     * @return array
+     * @return mixed
      */
-    public function destroy($id): array
+    public function destroy($id): mixed
     {
-        $user = User::find($id)->delete();
+        Log::info('Find & Delete User');
 
-        return $user;
+        return User::find($id)->delete();
     }
 }

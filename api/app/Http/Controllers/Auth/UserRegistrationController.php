@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Modules\Api\User\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -11,49 +11,22 @@ use Illuminate\Support\Facades\Log;
 
 class UserRegistrationController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __invoke(Request $request): mixed
     {
         // $this->middleware('auth:api', ['except' => ['store']]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
         try {
-            Log::info('Store');
+            Log::info('Store User Registration');
 
             $this->validate($request, [
                 'name'                  => 'required|string|min:6|max:254',
-                'email'                 => 'sometimes|required|string|email|max:254|unique:users',
+                'email'                 => 'sometimes|required|string|max:254|email|unique:users',
                 'password'              => 'required|string|min:6|confirmed',
                 'password_confirmation' => 'required|string|min:6|same:password',
             ]);
 
-            $user = User::create([
-                'name'     => $request->name,
-                'email'    => $request->email,
-                'password' => $request->password,
-                // 'created_by' => 0,
-                // 'updated_by' => 0,
-            ]);
+            $user = (new UserService)->store($request->only([
+                'name', 'email', 'password'
+            ]));
 
             $token = Auth::login($user);
 
@@ -69,32 +42,5 @@ class UserRegistrationController extends Controller
                 'message' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
     }
 }

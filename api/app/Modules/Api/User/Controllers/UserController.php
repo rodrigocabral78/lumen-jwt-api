@@ -5,6 +5,7 @@ namespace App\Modules\Api\User\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Api\User\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -18,10 +19,12 @@ class UserController extends Controller
      *
      * @param Request $request
      *
-     * @return object
+     * @return mixed
      */
-    public function index(Request $request): object
+    public function index(Request $request): mixed
     {
+        Log::info('Index User');
+
         $data = $this->userService->index($request);
 
         return response()->json($data, 200);
@@ -32,10 +35,12 @@ class UserController extends Controller
      *
      * @param mixed $id
      *
-     * @return object
+     * @return mixed
      */
-    public function show($id): object
+    public function show($id): mixed
     {
+        Log::info('Show User');
+
         $data = $this->userService->show($id);
 
         return response()->json($data, 200);
@@ -46,10 +51,12 @@ class UserController extends Controller
      *
      * @param Request $request
      *
-     * @return object
+     * @return mixed
      */
-    public function store(Request $request): object
+    public function store(Request $request): mixed
     {
+        Log::info('Store User');
+
         $validator = $this->validate($request, [
             'name'                  => 'required|string|min:6|max:254',
             'email'                 => 'sometimes|required|string|email|max:254|unique:users',
@@ -79,10 +86,12 @@ class UserController extends Controller
      * @param Request $request
      * @param mixed $id
      *
-     * @return object
+     * @return mixed
      */
-    public function update(Request $request, $id): object
+    public function update(Request $request, $id): mixed
     {
+        Log::info('Update User');
+
         $validator = $this->validate($request, [
             'name'                  => 'required|string|min:6|max:254',
             'email'                 => 'sometimes|required|string|email|max:254|unique:users',
@@ -108,10 +117,12 @@ class UserController extends Controller
      *
      * @param mixed $id
      *
-     * @return object
+     * @return mixed
      */
-    public function destroy($id): object
+    public function destroy($id): mixed
     {
+        Log::info('Destroy User');
+
         $data = $this->userService->destroy($id);
 
         // return response()->json($data, 200);

@@ -8,42 +8,109 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    private $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
+    public function __construct(
+        private UserService $userService
+    ) {
     }
 
-    public function index(Request $request)
+    /**
+     * index
+     *
+     * @param Request $request
+     *
+     * @return object
+     */
+    public function index(Request $request): object
     {
-        $data =  $this->userService->index($request);
+        $data = $this->userService->index($request);
 
         return response()->json($data, 200);
     }
 
-    public function show($id)
+    /**
+     * show
+     *
+     * @param mixed $id
+     *
+     * @return object
+     */
+    public function show($id): object
     {
         $data = $this->userService->show($id);
 
         return response()->json($data, 200);
     }
 
-    public function store(Request $request)
+    /**
+     * store
+     *
+     * @param Request $request
+     *
+     * @return object
+     */
+    public function store(Request $request): object
     {
-        $data = $this->userService->store($request);
+        $validator = $this->validate($request, [
+            'name'                  => 'required|string|min:6|max:254',
+            'email'                 => 'sometimes|required|string|email|max:254|unique:users',
+            'password'              => 'required|string|min:6|confirmed',
+            'is_admin'              => 'required|boolean',
+            'is_active'             => 'required|boolean',
+        ]);
+
+        dd($validator);
+        // Illuminate\Validation\ValidationException
+        // if ($validator->errors()->count()) {
+        //     throw new \Exception($validator->errors()->first(), 400);
+        // }
+
+        $data = $this->userService->store(
+            $request->only([
+                'name', 'email', 'password', 'is_admin', 'is_active'
+            ])
+        );
 
         return response()->json($data, 201);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * update
+     *
+     * @param Request $request
+     * @param mixed $id
+     *
+     * @return object
+     */
+    public function update(Request $request, $id): object
     {
-        $data = $this->userService->update($request, $id);
+        $validator = $this->validate($request, [
+            'name'                  => 'required|string|min:6|max:254',
+            'email'                 => 'sometimes|required|string|email|max:254|unique:users',
+            'password'              => 'required|string|min:6|confirmed',
+            'is_admin'              => 'required|boolean',
+            'is_active'             => 'required|boolean',
+        ]);
+
+        dd($validator);
+
+        $data = $this->userService->update(
+            $request->only([
+                'name', 'email', 'password', 'is_admin', 'is_active'
+            ]),
+            $id
+        );
 
         return response()->json($data, 200);
     }
 
-    public function destroy($id)
+    /**
+     * destroy
+     *
+     * @param mixed $id
+     *
+     * @return object
+     */
+    public function destroy($id): object
     {
         $data = $this->userService->destroy($id);
 

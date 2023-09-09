@@ -4,8 +4,15 @@ namespace App\Modules\Api\User\Services;
 
 final class UserSearchService
 {
-    // public function search($queryBuilder, $request)
-    public function __invoke($queryBuilder, $request)
+    /**
+     * __invoke
+     *
+     * @param mixed $queryBuilder
+     * @param mixed $request
+     *
+     * @return object
+     */
+    public function __invoke($queryBuilder, $request): object
     {
         if ($request->id) {
             $queryBuilder->where("id", "=", $request->id);
@@ -16,15 +23,11 @@ final class UserSearchService
         }
 
         if ($request->name) {
-            $queryBuilder->where("name", "=", $request->name);
+            $queryBuilder->where("name", "like", $request->name);
         }
 
         if ($request->email) {
-            $queryBuilder->where("email", "=", $request->email);
-        }
-
-        if ($request->password) {
-            $queryBuilder->where("password", "=", $request->password);
+            $queryBuilder->where("email", "like", $request->email);
         }
 
         if ($request->is_admin) {

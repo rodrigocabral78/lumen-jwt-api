@@ -51,6 +51,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $primaryKey = 'id';
 
     /**
+     * The table users for the model.
+     */
+    protected $table = 'users';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var string[]

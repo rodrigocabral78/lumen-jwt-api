@@ -1,0 +1,3 @@
+/.docker
+*.y*ml
+.php-cs-fixer-old.php

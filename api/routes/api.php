@@ -35,16 +35,16 @@ $router->get('user', [
     },
 ]);
 
-$router->group([
-    'as'         => 'v1',
-    'middleware' => 'auth:api',
-    'prefix'     => 'v1/',
-], function () use ($router) {
-    $router->get('users', [
-        'as'   => 'users',
-        'uses' => 'UserController@index',
-    ]);
-});
+// $router->group([
+//     'as'         => 'v1',
+//     'middleware' => 'auth:api',
+//     'prefix'     => 'v1/',
+// ], function () use ($router) {
+//     $router->get('users', [
+//         'as'   => 'users',
+//         'uses' => 'UserController@index',
+//     ]);
+// });
 
 // $router->any('{any}', function () use ($router) {
 //     return response()->json([

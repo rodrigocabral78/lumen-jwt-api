@@ -5,14 +5,19 @@ namespace App\Modules\Api\User\Services;
 use App\Modules\Api\User\Models\User;
 use App\Modules\Api\User\Services\UserSearchService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class UserService
 {
-    public function index(Request $request)
+    /**
+     * index
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
+    public function index(Request $request): array
     {
         $userSearchService = new UserSearchService();
-        // return $userSearchService->search(User::with([]), $request);
         $data = $userSearchService(User::with([]), $request)->toArray();
 
         return [
@@ -32,7 +37,14 @@ class UserService
         ];
     }
 
-    public function show($id)
+    /**
+     * show
+     *
+     * @param mixed $id
+     *
+     * @return array
+     */
+    public function show($id): array
     {
         // $user = User::findOrFail($id);
         $user = User::find($id);
@@ -40,76 +52,42 @@ class UserService
         return $user;
     }
 
-    public function store($request)
+    /**
+     * store
+     *
+     * @param mixed $data
+     *
+     * @return array
+     */
+    public function store($data): array
     {
-        $validator = Validator::make($request->all(), [
-            "uuid"       => "required",
-            "name"       => "required",
-            "email"      => "required",
-            "password"   => "required",
-            "is_admin"   => "required",
-            "is_active"  => "required",
-            "created_by" => "nullable",
-            "updated_by" => "nullable",
-        ]);
-
-        if ($validator->errors()->count()) {
-            throw new \Exception($validator->errors()->first(), 400);
-        }
-
-        if (!$validator->errors()->count()) {
-            $data = [
-                "uuid"       => $request->uuid,
-                "name"       => $request->name,
-                "email"      => $request->email,
-                "password"   => $request->password,
-                "is_admin"   => $request->is_admin,
-                "is_active"  => $request->is_active,
-                "created_by" => $request->created_by,
-                "updated_by" => $request->updated_by,
-            ];
-
-            return User::create($data);
-        }
+        return User::create($data);
     }
 
-    public function update($request, $id)
+    /**
+     * update
+     *
+     * @param mixed $data
+     * @param mixed $id
+     *
+     * @return array
+     */
+    public function update($data, $id): array
     {
-        // $user = User::find($id);
-
-        $validator = Validator::make($request->all(), [
-            "uuid"       => "required",
-            "name"       => "required",
-            "email"      => "required",
-            "password"   => "required",
-            "is_admin"   => "required",
-            "is_active"  => "required",
-            "created_by" => "nullable",
-            "updated_by" => "nullable",
-        ]);
-
-        if ($validator->errors()->count()) {
-            throw new \Exception($validator->errors()->first(), 400);
-        }
-
-        if (!$validator->errors()->count()) {
-            $data = [
-                "uuid"       => $request->uuid,
-                "name"       => $request->name,
-                "email"      => $request->email,
-                "password"   => $request->password,
-                "is_admin"   => $request->is_admin,
-                "is_active"  => $request->is_active,
-                "created_by" => $request->created_by,
-                "updated_by" => $request->updated_by,
-            ];
-            $user = User::find($id)->update($data);
-        }
+        // $user = User::find($id)
+        $user = User::find($id)->update($data);
 
         return $user;
     }
 
-    public function destroy($id)
+    /**
+     * destroy
+     *
+     * @param mixed $id
+     *
+     * @return array
+     */
+    public function destroy($id): array
     {
         $user = User::find($id)->delete();
 

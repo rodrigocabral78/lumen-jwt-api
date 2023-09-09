@@ -41,7 +41,7 @@ class AuthenticationController extends Controller
         Log::info('Store AuthenticationController');
 
         $this->validate($request, [
-            'email'    => 'required|string|email',
+            'email'    => 'sometimes|required|string|email|max:254',
             'password' => 'required|string|min:6',
         ]);
 

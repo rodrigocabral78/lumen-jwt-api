@@ -41,8 +41,8 @@ class UserRegistrationController extends Controller
             Log::info('Store');
 
             $this->validate($request, [
-                'name'                  => 'required|string|min:6|max:255',
-                'email'                 => 'required|string|email|max:255|unique:users',
+                'name'                  => 'required|string|min:6|max:254',
+                'email'                 => 'sometimes|required|string|email|max:254|unique:users',
                 'password'              => 'required|string|min:6|confirmed',
                 'password_confirmation' => 'required|string|min:6|same:password',
             ]);

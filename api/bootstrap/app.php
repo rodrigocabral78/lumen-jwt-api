@@ -61,6 +61,7 @@ $app->singleton(
 
 $app->configure('app');
 $app->configure('jwt');
+$app->configure('swagger-lume');
 
 /*
 |--------------------------------------------------------------------------
@@ -98,11 +99,13 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 if ('production' !== $app->environment()) {
-    $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+    $app->register(\Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
     $app->register(\Rodrixcornell\ApiGenerate\ApiGenerateServiceProvider::class);
+    $app->register(\KitLoong\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
 }
-$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
-$app->register(Yajra\Oci8\Oci8ServiceProvider::class);
+$app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(\Yajra\Oci8\Oci8ServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
